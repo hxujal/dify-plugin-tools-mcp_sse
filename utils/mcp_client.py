@@ -4,6 +4,9 @@ from queue import Queue, Empty
 from threading import Event, Thread
 from typing import Any
 from urllib.parse import urljoin, urlparse
+import urllib3
+# Disable SSL warnings
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 import httpx
 from httpx_sse import connect_sse
@@ -85,7 +88,8 @@ class McpClient:
             url=self.endpoint_url,
             json=data,
             headers={'Content-Type': 'application/json'},
-            timeout=self.timeout
+            timeout=self.timeout,
+            verify=False
         )
         response.raise_for_status()
         logging.debug(f"{self.name} - Client message sent successfully: {response.status_code}")
